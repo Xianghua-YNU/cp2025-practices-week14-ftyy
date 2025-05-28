@@ -6,6 +6,8 @@ plt.rcParams['font.sans-serif'] = ['SimHei', 'Arial Unicode MS']
 plt.rcParams['axes.unicode_minus'] = False
 
 def van_der_pol_ode(state: np.ndarray, t: float, mu: float = 1.0, omega: float = 1.0) -> np.ndarray:
+    if not isinstance(state, np.ndarray) or len(state) != 2:
+        raise ValueError("Expected 'state' to be a NumPy array with two elements [x, v].")
     x, v = state
     dxdt = v
     dvdt = mu * (1 - x**2) * v - omega**2 * x
