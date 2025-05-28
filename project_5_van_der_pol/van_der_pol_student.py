@@ -5,7 +5,6 @@ from typing import Tuple, Callable, List
 plt.rcParams['font.sans-serif'] = ['SimHei', 'Arial Unicode MS']
 plt.rcParams['axes.unicode_minus'] = False
 
-
 def van_der_pol_ode(state: np.ndarray, t: float, mu: float = 1.0, omega: float = 1.0) -> np.ndarray:
     if not isinstance(state, np.ndarray) or len(state) != 2:
         raise ValueError("Expected 'state' to be a NumPy array with two elements [x, v].")
@@ -57,7 +56,7 @@ def calculate_energy(state: np.ndarray, omega: float = 1.0) -> float:
     x, v = state
     return 0.5 * v**2 + 0.5 * omega**2 * x**2
 
-def analyze_limit_cycle(t: np.ndarray, states: np.ndarray) -> Tuple[float, float]:
+def analyze_limit_cycle(states: np.ndarray, t: np.ndarray) -> Tuple[float, float]:
     # 振幅：x的最大绝对值
     amplitude = np.max(np.abs(states[:, 0]))
     
@@ -66,7 +65,7 @@ def analyze_limit_cycle(t: np.ndarray, states: np.ndarray) -> Tuple[float, float
     zero_crossings = np.where(np.diff(np.sign(x)) > 0)[0]
     
     if len(zero_crossings) > 1:
-        # 计算相邻零点之间的时间差（使用时间数组t，而不是步数）
+        # 计算相邻零点之间的时间差
         periods = np.diff(t[zero_crossings])
         period = np.mean(periods)
     else:
@@ -90,13 +89,13 @@ def main():
         t, states = solve_ode(van_der_pol_ode, initial_state, t_span, dt, mu=mu_val, omega=omega)
         plot_time_evolution(t, states, f"van der Pol 振子时间演化 (mu={mu_val})")
         plot_phase_space(states, f"van der Pol 相空间 (mu={mu_val})")
-        amp, per = analyze_limit_cycle(t, states)
+        amp, per = analyze_limit_cycle(states, t)
         print(f"mu={mu_val}: 振幅≈{amp:.3f}, 周期≈{per:.3f}")
 
     # 任务3 - 相空间分析
     t, states = solve_ode(van_der_pol_ode, initial_state, t_span, dt, mu=mu, omega=omega)
     plot_phase_space(states, f"van der Pol 相空间 (mu={mu})")
-    amp, per = analyze_limit_cycle(t, states)
+    amp, per = analyze_limit_cycle(states, t)
     print(f"极限环特征：振幅≈{amp:.3f}, 周期≈{per:.3f}")
 
     # 任务4 - 能量分析
